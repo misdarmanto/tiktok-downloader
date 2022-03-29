@@ -8,7 +8,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#F23354"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -20,10 +20,15 @@
       "supportsTablet": true
     },
     "android": {
+      "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
+        "backgroundColor": "#F23354"
+      },
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-8095237298596091~6604195930"
+      },
+      "package": "com.misdar.InstaDownloader"
     },
     "web": {
       "favicon": "./assets/favicon.png"
