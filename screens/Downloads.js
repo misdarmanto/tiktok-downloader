@@ -8,14 +8,14 @@ import { StatusBar } from "expo-status-bar";
 import interstitialAdd from "../Adds/InterstitialAdd";
 
 export default function Downloads() {
-  const [images, setImages] = useState([]);
+  const [videos, setVideos] = useState([]);
   const { changeStatus } = useContext(ContextApi);
   const [count, setCount] = useState(1);
   const [noImage, setNoImage] = useState(false);
   const navigation = useNavigation();
 
   const getData = async () => {
-    const getPhoto = await MediaLibrary.getAlbumAsync("instagramDownloader");
+    const getPhoto = await MediaLibrary.getAlbumAsync("TiktokDownloader");
     if (getPhoto === null) {
       setNoImage(true);
       return;
@@ -23,19 +23,19 @@ export default function Downloads() {
     const getAllPhoto = await MediaLibrary.getAssetsAsync({
       album: getPhoto,
       sortBy: ["creationTime"],
-      mediaType: ["photo"],
+      mediaType: ["video"],
     });
-    setImages(getAllPhoto.assets);
+    setVideos(getAllPhoto.assets);
   };
-
+  
   useEffect(() => {
     getData();
   }, [changeStatus]);
 
-  const imageOnClick = (uri) => {
+  const thumbnailOnClick = (value) => {
     if (count % 5 === 0) interstitialAdd();
     setCount(count + 1);
-    navigation.navigate("ShowImage", { uri: uri });
+    navigation.navigate("PlayVideo", { uri: value.uri, title : value.filename });
   };
 
   return (
@@ -61,26 +61,26 @@ export default function Downloads() {
             flexWrap: "wrap",
           }}
         >
-          {images.map((image, index) => (
+          {videos.map((value, index) => (
             <TouchableOpacity
               key={index}
-              onPress={() => imageOnClick(image.uri)}
+              onPress={() => thumbnailOnClick(value)}
             >
               <Image
                 style={{
-                  width: widthPercentage(33),
-                  height: heightPercentage(20),
+                  width: widthPercentage(49.4),
+                  height: heightPercentage(50),
                   marginHorizontal: widthPercentage(0.2),
                   marginVertical: heightPercentage(0.1),
                 }}
                 resizeMode="cover"
-                source={{ uri: image.uri }}
+                source={{ uri: value.uri }}
               />
             </TouchableOpacity>
           ))}
         </View>
       )}
-      <StatusBar style="light" />
+      <StatusBar style="auto" backgroundColor="#FFF" />
     </ScrollView>
   );
 }

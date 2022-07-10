@@ -17,14 +17,15 @@ import Layout from "../Global/Layout";
 import ToolTip from "../Components/Tooltip";
 import { ContextApi } from "../functions/Context";
 import BannerAdd from "../Adds/BannerAdd";
-import interstitialAdd from "../Adds/InterstitialAdd";
 import RewardedAdd from "../Adds/RewardedAdd";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Home() {
   const [inputUrl, setInputUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [displayTooltip, setDisplayTooltip] = useState(false);
   const { changeStatus, setChangeStatus } = useContext(ContextApi);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const askPermission = async () => {
@@ -38,19 +39,18 @@ export default function Home() {
 
   const tooltip = () => {
     setDisplayTooltip(true);
-    setTimeout(() => setDisplayTooltip(false), 2000);
+    setTimeout(() => setDisplayTooltip(false), 1000);
   };
 
   const handleDownload = async () => {
     Keyboard.dismiss();
-    // interstitialAdd();
     if (inputUrl === "") return;
     try {
       console.log("start download.....");
       tooltip();
       setLoading(true);
       const fectData = await fetch(
-        "https://myinstasc.herokuapp.com/instagram/download",
+        "https://tiktakdownscrapper.herokuapp.com/tiktok",
         {
           method: "POST",
           headers: {
@@ -63,15 +63,15 @@ export default function Home() {
         }
       );
       const result = await fectData.json();
-      const key = Object.keys(result);
-      for (let i = 0; i < Object.keys(result).length - 2; i++) {
-        await downloadFileHandler(result[key[i]]);
-      }
+      setLoading(false);
       tooltip();
       setInputUrl("");
+      await downloadFileHandler(result.link);
       setChangeStatus(!changeStatus);
-      setLoading(false);
-      RewardedAdd();
+      setTimeout(() => {
+        navigation.navigate("Downloads");
+        RewardedAdd();
+      }, 1000);
     } catch (err) {
       console.log(err);
       setLoading(false);
@@ -92,7 +92,7 @@ export default function Home() {
           style={[styles.inputStyle, styles.inputUrlStyle]}
           onChangeText={setInputUrl}
           value={inputUrl}
-          placeholder="Link to the post..."
+          placeholder="masukan link..."
         />
         <TouchableOpacity
           style={[styles.inputStyle, styles.buttonDownloadStyle]}
@@ -106,16 +106,10 @@ export default function Home() {
           )}
         </TouchableOpacity>
       </View>
-      <View
-        style={{
-          marginTop: heightPercentage(16),
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      <View style={styles.adStyle}>
         <BannerAdd />
       </View>
-      <StatusBar style="light" />
+      <StatusBar style="auto" backgroundColor="#FFF" />
     </Layout>
   );
 }
@@ -128,13 +122,13 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     height: heightPercentage(7),
-    width: widthPercentage(85),
+    width: widthPercentage(90),
     borderRadius: 30,
     paddingHorizontal: widthPercentage(5),
   },
   inputUrlStyle: {
     marginVertical: heightPercentage(1),
-    borderWidth: 1,
+    backgroundColor: "#F3F3F3",
     textAlign: "center",
     borderColor: "gray",
     color: "gray",
@@ -148,5 +142,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#FFF",
     textAlign: "center",
+  },
+  adStyle: {
+    marginTop: heightPercentage(19),
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

@@ -3,12 +3,9 @@ import * as MediaLibrary from "expo-media-library";
 
 export const downloadFileHandler = async (content) => {
   console.log("start download...");
-  const fileUri =
-    content.type === "jpg"
-      ? FileSystem.documentDirectory + "instagram.jpg"
-      : FileSystem.documentDirectory + "instagram.mp4";
+  const fileUri = FileSystem.documentDirectory +"Tiktok"+Date.now()+".mp4";
   try {
-    const res = await FileSystem.downloadAsync(content.url, fileUri);
+    const res = await FileSystem.downloadAsync(content, fileUri);
     saveFile(res.uri);
   } catch (e) {
     console.log(e);
@@ -18,9 +15,9 @@ export const downloadFileHandler = async (content) => {
 const saveFile = async (uri) => {
   try {
     const asset = await MediaLibrary.createAssetAsync(uri);
-    const album = await MediaLibrary.getAlbumAsync("instagramDownloader");
+    const album = await MediaLibrary.getAlbumAsync("TiktokDownloader");
     if (album === null) {
-      await MediaLibrary.createAlbumAsync("instagramDownloader", asset);
+      await MediaLibrary.createAlbumAsync("TiktokDownloader", asset);
     } else {
       await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
     }
